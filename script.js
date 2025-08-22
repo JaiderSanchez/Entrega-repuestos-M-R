@@ -1,5 +1,5 @@
 /* =========================
-   Datos base (puedes editar)
+   DATOS BASE
    ========================= */
 
 // Si ya guardaste tus técnicos reales en localStorage, se cargarán de ahí.
@@ -29,6 +29,11 @@ const INVENTARIO_DEFAULT = {
     { id: "REP-002", nombre: "Filtro de aire", stock: 40 },
     { id: "REP-003", nombre: "Cadena 428H", stock: 10 },
   ],
+  Accesorios: [
+    { id: "ACCE-004", nombre: "Manigueta", stock: 15},
+    { id: "ACCE-005", nombre: "Motor de arranque", stock: 20},
+    { id: "ACCE-006", nombre: "Válvulas", stock: 7},
+  ],
   Aceites: [
     { id: "ACE-010", nombre: "Aceite 20W-50 mineral 1L", stock: 30 },
     { id: "ACE-020", nombre: "Aceite 10W-40 semisintético 1L", stock: 18 },
@@ -37,6 +42,11 @@ const INVENTARIO_DEFAULT = {
     { id: "LLA-090", nombre: "Llanta 90/90-17 del.", stock: 5 },
     { id: "LLA-100", nombre: "Llanta 100/90-17 tras.", stock: 3 },
   ],
+  Neumáticos: [
+    { id: "NEU-200", nombre: "Michellín", stock: 16},
+    { id: "NEU-207", nombre: "Pirelli", stock: 6},
+    { id: "NEU-211", nombre: "IRC-TIRE", stock: 30},
+  ]
 };
 
 /* =========================
