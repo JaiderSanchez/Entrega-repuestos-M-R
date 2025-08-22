@@ -1,0 +1,5 @@
+Control de stock por ubicación (piso/bodega).
+Edición/eliminación de registros del historial.
+Validaciones adicionales (p. ej., cantidad máxima por item, bloqueo si no hay stock).
+Un selector de técnico rápido por piso (chips).
+Migración a API + PostgreSQL (Supabase/Render) manteniendo esta misma UI.

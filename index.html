@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <title>MOTO REYES S.A.S</title>
+</head>
+<body>
+  <header class="app-header">
+    <img src="logo-moto-reyes.jpg" alt="Logo MOTO REYES S.A.S" class="logo"/>
+    <h1 class="titulo">Entrega de Repuestos - Auxiliar</h1>
+  </header>
+
+  <nav class="app-nav">
+    <a href="#asesoras">Asesoras</a>
+    <a href="#historial">Historial</a>
+  </nav>
+
+  <main>
+    <!-- Tarjetas de asesoras (se rellenan desde JS) -->
+    <section id="asesoras" class="asesoras" aria-label="Asesoras que entregan repuestos">
+      <!-- JS inserta aquí -->
+    </section>
+
+    <section class="acciones">
+      <button id="btn-exportar-csv">Exportar CSV</button>
+      <button id="btn-exportar-pdf">Exportar PDF</button>
+      <span class="acciones__ayuda">Los datos se guardan localmente (localStorage) mientras no haya backend.</span>
+    </section>
+
+    <!-- Historial -->
+    <section id="historial" class="historial" aria-labelledby="titulo-historial">
+      <div class="historial__encabezado">
+        <h2 id="titulo-historial">Historial de entregas</h2>
+        <input id="filtro-historial" type="search" placeholder="Filtrar por asesora, técnico o ítem..."/>
+      </div>
+      <div class="tabla-wrapper">
+        <table class="tabla" aria-describedby="titulo-historial">
+          <thead>
+            <tr>
+              <th>Fecha y hora</th>
+              <th>Asesora</th>
+              <th>Técnico</th>
+              <th>Ítem</th>
+              <th>Categoría</th>
+              <th>Cantidad</th>
+              <th>Notas</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-historial">
+            <!-- JS inserta aquí -->
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- Modal de registro de entrega -->
+  <dialog id="modal-recepcion" class="modal">
+    <form id="form-recepcion">
+      <h3>Registrar entrega</h3>
+
+      <div class="campo">
+        <label>Asesora</label>
+        <input id="asesora-seleccionada" type="text" readonly/>
+      </div>
+
+      <div class="campo">
+        <label for="select-tecnico">Técnico</label>
+        <select id="select-tecnico" required></select>
+      </div>
+
+      <div class="campo">
+        <label for="select-categoria">Categoría</label>
+        <select id="select-categoria" required>
+          <option value="Repuestos">Repuestos</option>
+          <option value="Aceites">Aceites</option>
+          <option value="Llantas">Llantas</option>
+        </select>
+      </div>
+
+      <div class="campo">
+        <label for="select-item">Ítem</label>
+        <select id="select-item" required></select>
+      </div>
+
+      <div class="campo">
+        <label for="input-cantidad">Cantidad</label>
+        <input id="input-cantidad" type="number" min="1" step="1" required/>
+      </div>
+
+      <div class="campo">
+        <label for="input-notas">Notas (opcional)</label>
+        <textarea id="input-notas" rows="2" placeholder="Observaciones breves"></textarea>
+      </div>
+
+      <div class="modal__acciones">
+        <button type="button" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
+        <button type="submit" id="btn-registrar" class="btn-primario">Registrar</button>
+      </div>
+    </form>
+  </dialog>
+
+  <!-- Plantilla para tarjeta de asesora -->
+  <template id="tpl-asesora">
+    <article class="contenedor-asesora">
+      <img src="sin_foto_perfil.jpg" alt="" class="asesora__foto"/>
+      <h3 class="asesora__nombre"></h3>
+      <button class="btn-recibir" type="button">Recibir repuesto</button>
+    </article>
+  </template>
+
+  <script src="script.js"></script>
+</body>
+</html>
