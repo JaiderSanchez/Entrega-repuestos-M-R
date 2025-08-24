@@ -11,11 +11,27 @@
     <img src="logo-moto-reyes.jpg" alt="Logo MOTO REYES S.A.S" class="logo"/>
     <h1 class="titulo">Entrega de Repuestos - Auxiliar</h1>
   </header>
-
-  <nav class="app-nav">
+  <nav class="app-nav" aria-label="Navegación principal">
     <a href="#asesoras">Asesoras</a>
     <a href="#historial">Historial</a>
   </nav>
+
+  <!-- Modal de PIN -->
+<dialog id="modal-pin" class="modal modal-pin" aria-labelledby="titulo-pin">
+  <form id="form-pin">
+    <h3 id="titulo-pin">Ingresar PIN</h3>
+    <p>La página está bloqueada. Ingresa tu PIN de 4 dígitos para continuar.</p>
+    
+    <div class="campo">
+      <label for="input-pin">PIN</label>
+      <input id="input-pin" type="password" inputmode="numeric" maxlength="4" required />
+    </div>
+
+    <div class="modal__acciones">
+      <button type="button" class="btn-primario" id="btn-desbloquear">Desbloquear</button>
+    </div>
+  </form>
+</dialog>
 
   <main>
     <!-- Tarjetas de asesoras (se rellenan desde JS) -->
@@ -24,28 +40,31 @@
     </section>
 
     <section class="acciones">
-      <button id="btn-exportar-csv">Exportar CSV</button>
+      <!-- <button id="btn-exportar-csv">Exportar CSV</button> -->
       <button id="btn-exportar-pdf">Exportar PDF</button>
-      <span class="acciones__ayuda">Los datos se guardan localmente (localStorage) mientras no haya backend.</span>
+      <span class="acciones__ayuda">
+        Los datos se guardan localmente (localStorage) mientras no haya backend.
+      </span>
     </section>
 
     <!-- Historial -->
     <section id="historial" class="historial" aria-labelledby="titulo-historial">
       <div class="historial__encabezado">
         <h2 id="titulo-historial">Historial de entregas</h2>
+        <label for="filtro-historial" class="visually-hidden">Buscar en historial</label>
         <input id="filtro-historial" type="search" placeholder="Filtrar por asesora, técnico o ítem..."/>
       </div>
       <div class="tabla-wrapper">
         <table class="tabla" aria-describedby="titulo-historial">
           <thead>
             <tr>
-              <th>Fecha y hora</th>
-              <th>Asesora</th>
-              <th>Técnico</th>
-              <th>Ítem</th>
-              <th>Categoría</th>
-              <th>Cantidad</th>
-              <th>Notas</th>
+              <th scope="col">Fecha y hora</th>
+              <th scope="col">Asesora</th>
+              <th scope="col">Técnico</th>
+              <th scope="col">Ítem</th>
+              <th scope="col">Categoría</th>
+              <th scope="col">Cantidad</th>
+              <th scope="col">Notas</th>
             </tr>
           </thead>
           <tbody id="tbody-historial">
@@ -57,13 +76,13 @@
   </main>
 
   <!-- Modal de registro de entrega -->
-  <dialog id="modal-recepcion" class="modal">
-    <form id="form-recepcion">
-      <h3>Registrar entrega</h3>
+  <dialog id="modal-recepcion" class="modal" aria-labelledby="titulo-modal">
+    <form id="form-recepcion" method="dialog">
+      <h3 id="titulo-modal">Registrar entrega</h3>
 
       <div class="campo">
-        <label>Asesora</label>
-        <input id="asesora-seleccionada" type="text" readonly/>
+        <label for="asesora-seleccionada">Asesora</label>
+        <input id="asesora-seleccionada" type="text" readonly aria-readonly="true"/>
       </div>
 
       <div class="campo">
@@ -72,8 +91,14 @@
       </div>
 
       <div class="campo">
+        <label for="input-numero-productos">Número de productos:</label>
+        <input id="input-numero-productos" type="number" min="1" step="1" required/>
+      </div>
+
+      <div class="campo">
         <label for="select-categoria">Categoría</label>
         <select id="select-categoria" required>
+          <option value="">-- Selecciona una categoría --</option>
           <option value="Repuestos">Repuestos</option>
           <option value="Accesorios">Accesorios</option>
           <option value="Aceites">Aceites</option>
@@ -83,8 +108,9 @@
       </div>
 
       <div class="campo">
-        <label for="select-item">Ítem</label>
-        <select id="select-item" required></select>
+        <label for="input-item">Ítem</label>
+        <input id="input-item" type="search" list="lista-items" placeholder="Escribe el nombre del producto..." required />
+        <datalist id="lista-items"></datalist>
       </div>
 
       <div class="campo">
@@ -97,8 +123,13 @@
         <textarea id="input-notas" rows="2" placeholder="Observaciones breves"></textarea>
       </div>
 
+      <button type="button" id="btn-agregar-producto" class="btn-secundario">
+        Agregar producto
+      </button>
+
       <div class="modal__acciones">
-        <button type="button" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
+        <!-- Cambié a type="reset" para limpiar el formulario cuando se cancela -->
+        <button type="reset" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
         <button type="submit" id="btn-registrar" class="btn-primario">Registrar</button>
       </div>
     </form>
@@ -107,11 +138,16 @@
   <!-- Plantilla para tarjeta de asesora -->
   <template id="tpl-asesora">
     <article class="contenedor-asesora">
-      <img src="sin_foto_perfil.jpg" alt="" class="asesora__foto"/>
+      <img src="sin_foto_perfil.jpg" alt="Foto de asesora" class="asesora__foto"/>
       <h3 class="asesora__nombre"></h3>
       <button class="btn-recibir" type="button">Recibir repuesto</button>
     </article>
   </template>
+
+
+ 
+
+
 
   <script src="script.js"></script>
 </body>

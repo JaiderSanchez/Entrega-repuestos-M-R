@@ -49,6 +49,41 @@ const INVENTARIO_DEFAULT = {
   ]
 };
 
+document.addEventListener("DOMContentLoaded", () => {
+  const modalPin = document.getElementById("modal-pin");
+  const inputPin = document.getElementById("input-pin");
+  const btnDesbloquear = document.getElementById("btn-desbloquear");
+
+  const PIN_CORRECTO = "2025";
+
+  // Activa blur y abre modal
+  document.body.classList.add("blur");
+  if (typeof modalPin.showModal === "function") {
+    modalPin.showModal();
+  } else {
+    // fallback si el navegador no soporta showModal
+    modalPin.setAttribute("open", "");
+  }
+
+  btnDesbloquear.addEventListener("click", () => {
+    if (inputPin.value === PIN_CORRECTO) {
+      // Cerrar modal
+      if (typeof modalPin.close === "function") {
+        modalPin.close();
+      } else {
+        modalPin.removeAttribute("open");
+      }
+
+      // Quitar blur
+      document.body.classList.remove("blur");
+    } else {
+      alert("PIN incorrecto. Intenta de nuevo.");
+      inputPin.value = "";
+      inputPin.focus();
+    }
+  });
+});
+
 /* =========================
    Utilidades de storage
    ========================= */
@@ -80,7 +115,7 @@ function setLS(key, value) {
 })();
 
 /* =========================
-   Render de Asesoras
+   Renderizado de Asesoras
    ========================= */
 const $asesoras = document.getElementById("asesoras");
 const tplAsesora = document.getElementById("tpl-asesora");
@@ -112,39 +147,54 @@ const $form  = document.getElementById("form-recepcion");
 const $asesoraSel = document.getElementById("asesora-seleccionada");
 const $selTecnico = document.getElementById("select-tecnico");
 const $selCategoria = document.getElementById("select-categoria");
-const $selItem = document.getElementById("select-item");
+const $inputItem = document.getElementById("input-item");
+const $listaItems = document.getElementById("lista-items");
 const $inputCantidad = document.getElementById("input-cantidad");
 const $inputNotas = document.getElementById("input-notas");
 const $btnCancelar = document.getElementById("btn-cancelar");
+const $inputNumeroProductos = document.getElementById("input-numero-productos");
+const inputCantidad = document.getElementById("input-cantidad");
+const btnRegistrar = document.getElementById("btn-registrar");
+const $btnAgregarProducto = document.getElementById("btn-agregar-producto");
 
+
+$btnAgregarProducto.addEventListener("click", agregarProductoEntrega);
+
+// Estado temporal de entrega múltiple
+let entregaActual = [];
+
+// Abrir modal
 function abrirModal(asesora){
   $asesoraSel.value = asesora;
   poblarTecnicos();
-  poblarItems();
+  actualizarListaItems($selCategoria.value);
+  $inputItem.value = "";
   $inputCantidad.value = "";
   $inputNotas.value = "";
   if(typeof $modal.showModal === "function"){
     $modal.showModal();
   } else {
-    // fallback muy básico
     $modal.setAttribute("open","");
   }
 }
-$btnCancelar.addEventListener("click", ()=> cerrarModal());
+
+// Cerrar modal
+$btnCancelar.addEventListener("click", cerrarModal);
 function cerrarModal(){
   if(typeof $modal.close === "function") $modal.close();
   else $modal.removeAttribute("open");
 }
 
+// Poblar select de técnicos por piso
 function poblarTecnicos(){
   const tecnicos = getLS(LS_KEYS.TECNICOS, []);
   $selTecnico.innerHTML = "";
 
-  const pisos = [...new Set(tecnicos.map(t=>t.piso))].sort();
+  const pisos = [...new Set(tecnicos.map(t => t.piso))].sort();
   pisos.forEach(piso => {
     const optgroup = document.createElement("optgroup");
     optgroup.label = `Piso ${piso}`;
-    tecnicos.filter(t=>t.piso===piso).forEach(t => {
+    tecnicos.filter(t => t.piso === piso).forEach(t => {
       const opt = document.createElement("option");
       opt.value = String(t.id);
       opt.textContent = `${t.nombre} (ID ${t.id})`;
@@ -154,19 +204,219 @@ function poblarTecnicos(){
   });
 }
 
-function poblarItems(){
+
+
+$inputNumeroProductos.addEventListener("input", () => {
+  const num = parseInt($inputNumeroProductos.value, 10);
+
+  if (!isNaN(num) && num > 0) {
+    // Habilitar campos
+    $selCategoria.disabled = true;
+    $inputItem.disabled = true;
+    $inputCantidad.disabled = true;
+
+    // Limpiar campos previos
+    $selCategoria.value = "";
+    $inputItem.value = "";
+    $inputCantidad.value = "";
+  } else {
+    // Si el número es inválido, deshabilitar campos
+    $selCategoria.disabled = true;
+    $inputItem.disabled = true;
+    $inputCantidad.disabled = true;
+
+    // Limpiar campos
+    $selCategoria.value = "";
+    $inputItem.value = "";
+    $inputCantidad.value = "";
+  }
+});
+
+
+
+/* =========================
+   Datalist de productos por categoría
+   ========================= */
+function actualizarListaItems(categoria){
+  $listaItems.innerHTML = ""; // limpiar opciones
+  const productos = INVENTARIO_DEFAULT[categoria] || [];
+  productos.forEach(prod => {
+    const option = document.createElement("option");
+    option.value = prod.nombre; // lo que aparece en el input
+    option.dataset.id = prod.id;
+    option.dataset.stock = prod.stock;
+    $listaItems.appendChild(option);
+  });
+}
+
+// Escuchar cambios de categoría
+$selCategoria.addEventListener("change", e => actualizarListaItems(e.target.value));
+
+/* =========================
+   Validar item ingresado
+   ========================= */
+function validarItemSeleccionado(itemNombre){
+  const opciones = [...$listaItems.options].map(opt => opt.value);
+  return opciones.includes(itemNombre);
+}
+
+
+// Manejo de la entrega múltiple: En vez de registrar directamente un solo ítem, se guardará temporalmente los productos que se van seleccionando en un array y se mostrará una pequeña lista antes de enviar al historial.
+
+// let entregaActual = []; // Array temporal
+
+
+// Nueva función: agregar producto a la entrega actual
+function agregarProductoEntrega() {
+  const categoria = $selCategoria.value;
+  const nombre = $inputItem.value.trim();
+  const cantidad = parseInt(inputCantidad.value, 10);
+
+  if (!nombre || isNaN(cantidad) || cantidad < 1) {
+    alert("Selecciona un producto válido y cantidad mayor a 0");
+    return;
+  }
+
+  // Validar que el producto pertenezca a la categoría seleccionada
+  const producto = INVENTARIO_DEFAULT[categoria].find(
+    p => p.nombre.toLowerCase() === nombre.toLowerCase()
+  );
+  if (!producto) {
+    alert(`El producto "${nombre}" no existe en la categoría "${categoria}"`);
+    return;
+  }
+
+  // Buscar el producto en el inventario por nombre
+  // const producto = INVENTARIO_DEFAULT[categoria].find(p => p.nombre === nombre);
+  // if (!producto) {
+  //   alert("El producto no existe en esta categoría");
+  //   return;
+  // }
+
+  if (cantidad > producto.stock) {
+    alert(`Stock insuficiente. Disponible: ${producto.stock}`);
+    return;
+  }
+
+  // Agregar al array temporal
+  entregaActual.push({
+    id: producto.id,
+    nombre: producto.nombre,
+    categoria,
+    cantidad
+  });
+
+  // Limpiar campos
+  inputItem.value = "";
+  inputCantidad.value = "";
+
+  mostrarListaEntrega(); // actualizar preview
+}
+
+// Mostrar lista previa de productos
+function mostrarListaEntrega() {
+  let preview = document.getElementById("preview-entrega");
+  if (!preview) {
+    preview = document.createElement("div");
+    preview.id = "preview-entrega";
+    preview.classList.add("preview-entrega");
+    btnRegistrar.parentNode.insertBefore(preview, btnRegistrar);
+  }
+
+  preview.innerHTML = "<h4>Productos en esta entrega:</h4>";
+  const ul = document.createElement("ul");
+
+  entregaActual.forEach((p, i) => {
+    const li = document.createElement("li");
+    li.textContent = `${p.nombre} (${p.categoria}) - Cantidad: ${p.cantidad}`;
+    // botón para eliminar
+    const btnQuitar = document.createElement("button");
+    btnQuitar.textContent = "❌";
+    btnQuitar.type = "button";
+    btnQuitar.onclick = () => {
+      entregaActual.splice(i, 1);
+      mostrarListaEntrega();
+    };
+    li.appendChild(btnQuitar);
+    ul.appendChild(li);
+  });
+
+  preview.appendChild(ul);
+}
+
+/* ========================= */
+
+
+
+// Escucha del submit (finalizar registro en historial)
+$form.addEventListener("submit", (e) => {
+  e.preventDefault();
+
+  if (entregaActual.length === 0) {
+    alert("Debes agregar al menos un producto a la entrega");
+    return;
+  }
+
+  const asesora = document.getElementById("asesora-seleccionada").value;
+  const tecnico = document.getElementById("select-tecnico").value;
+  const notas = document.getElementById("input-notas").value;
+  const fecha = new Date().toLocaleString();
+
+  const tbodyHistorial = document.getElementById("tbody-historial");
+
+  entregaActual.forEach(p => {
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${fecha}</td>
+      <td>${asesora}</td>
+      <td>${tecnico}</td>
+      <td>${p.nombre}</td>
+      <td>${p.categoria}</td>
+      <td>${p.cantidad}</td>
+      <td>${notas}</td>
+    `;
+    tbodyHistorial.appendChild(fila);
+
+    // Actualizar stock
+    const prodInventario = INVENTARIO_DEFAULT[p.categoria].find(x => x.id === p.id);
+    if (prodInventario) prodInventario.stock -= p.cantidad;
+  });
+
+  // Limpiar estado
+  entregaActual = [];
+  // document.getElementById("preview-entrega").innerHTML = "";
+  const preview = document.getElementById("preview-entrega");
+  if (preview) preview.innerHTML = "";
+  e.target.reset();
+});
+
+
+
+
+
+
+
+function poblarItems() {
   const inventario = getLS(LS_KEYS.INVENTARIO, {});
   const categoria = $selCategoria.value;
   const items = inventario[categoria] || [];
-  $selItem.innerHTML = "";
+  $listaItems.innerHTML = ""; // 👈 limpiar datalist
 
   items.forEach(it => {
     const opt = document.createElement("option");
     opt.value = it.id;
-    opt.textContent = `${it.nombre} — Stock: ${it.stock}`;
-    $selItem.appendChild(opt);
+
+    if (it.stock <= 0) {
+      opt.label = `${it.nombre} — Sin stock ❌`;
+      opt.disabled = true; // 👈 no seleccionable
+    } else {
+      opt.label = `${it.nombre} — Stock: ${it.stock}`;
+    }
+
+    $listaItems.appendChild(opt);
   });
 }
+
 $selCategoria.addEventListener("change", poblarItems);
 
 // Guardar entrega
@@ -188,11 +438,17 @@ $form.addEventListener("submit", (e)=>{
     return;
   }
 
-  // Validar stock (demo)
+  // Validar stock y existencia del item
   const inventario = getLS(LS_KEYS.INVENTARIO, {});
   const arr = inventario[categoria] || [];
   const item = arr.find(x=>x.id===itemId);
-  if(item && typeof item.stock === "number"){
+
+  if (!item) {
+    alert("El producto seleccionado no pertenece a la categoría indicada.");
+    return;
+  }
+
+  if(typeof item.stock === "number"){
     if(item.stock < cantidad){
       alert(`Stock insuficiente. Stock actual de "${item.nombre}": ${item.stock}.`);
       return;
@@ -209,7 +465,7 @@ $form.addEventListener("submit", (e)=>{
     tecnicoNombre: tecnico.nombre,
     categoria,
     itemId,
-    itemNombre: item ? item.nombre : itemId,
+    itemNombre: item.nombre,
     cantidad,
     notas
   };
@@ -238,8 +494,8 @@ function renderHistorial(){
   $tbodyHistorial.innerHTML = "";
 
   entregas
-    .filter(e=>{
-      if(!q) return true;
+    .filter(e => {
+      if (!q) return true;
       return (
         e.asesora.toLowerCase().includes(q) ||
         e.tecnicoNombre.toLowerCase().includes(q) ||
@@ -247,13 +503,21 @@ function renderHistorial(){
         e.categoria.toLowerCase().includes(q)
       );
     })
-    .forEach(e=>{
+    .forEach(e => {
       const tr = document.createElement("tr");
+
+      // Verificar stock actual del producto
+      const inventario = getLS(LS_KEYS.INVENTARIO, {});
+      const prodActual = (inventario[e.categoria] || []).find(p => p.id === e.itemId);
+      let stockClass = "";
+      if (!prodActual || prodActual.stock <= 0) stockClass = "sin-stock";
+      else stockClass = "con-stock";
+
       tr.innerHTML = `
         <td>${formatFechaHora(e.timestamp)}</td>
         <td>${e.asesora}</td>
         <td>${e.tecnicoNombre} (ID ${e.tecnicoId})</td>
-        <td>${e.itemNombre}</td>
+        <td class="${stockClass}">${e.itemNombre}</td>
         <td>${e.categoria}</td>
         <td>${e.cantidad}</td>
         <td>${e.notas || ""}</td>
@@ -271,44 +535,6 @@ function formatFechaHora(iso){
 
 
 // Exportaciones
-
-document.getElementById("btn-exportar-csv").addEventListener("click", ()=>{
-  const entregas = getLS(LS_KEYS.ENTREGAS, []);
-  if(!entregas.length){ alert("No hay entregas para exportar."); return; }
-  const rows = [
-    ["id","fecha_hora","asesora","tecnico_id","tecnico_nombre","categoria","item_id","item_nombre","cantidad","notas"]
-  ];
-  entregas.forEach(e=>{
-    rows.push([
-      e.id,
-      new Date(e.timestamp).toISOString(),
-      e.asesora,
-      e.tecnicoId,
-      e.tecnicoNombre,
-      e.categoria,
-      e.itemId,
-      e.itemNombre,
-      e.cantidad,
-      (e.notas || "").replace(/\n/g," ")
-    ]);
-  });
-  const csv = rows.map(r=> r.map(escapeCSV).join(",")).join("\n");
-  const blob = new Blob([csv], {type:"text/csv;charset=utf-8;"});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = `entregas_${new Date().toISOString().slice(0,19).replace(/[:T]/g,"-")}.csv`;
-  document.body.appendChild(a);
-  a.click();
-  a.remove();
-  URL.revokeObjectURL(url);
-});
-
-function escapeCSV(v){
-  const s = String(v ?? "");
-  if(/[",\n]/.test(s)) return `"${s.replace(/"/g,'""')}"`;
-  return s;
-}
 
 document.getElementById("btn-exportar-pdf").addEventListener("click", ()=>{
   const entregas = getLS(LS_KEYS.ENTREGAS, []);
@@ -341,7 +567,7 @@ document.getElementById("btn-exportar-pdf").addEventListener("click", ()=>{
             <td>${e.categoria}</td>
             <td>${e.itemNombre}</td>
             <td>${e.cantidad}</td>
-            <td>${(e.notas || "").replace(/</g,"&lt;")}</td>
+            <td>${(e.notas || "").replace(/[<>]/g, c => c === "<" ? "&lt;" : "&gt;")}</td>
           </tr>`).join("")}
       </tbody>
     </table>
@@ -349,6 +575,7 @@ document.getElementById("btn-exportar-pdf").addEventListener("click", ()=>{
   </body></html>`;
 
   const w = window.open("", "_blank");
+  if (!w) { alert("Habilita ventanas emergentes para exportar."); return; }
   w.document.open();
   w.document.write(html);
   w.document.close();
