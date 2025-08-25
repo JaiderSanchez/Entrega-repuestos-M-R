@@ -203,6 +203,8 @@ document.getElementById("formEntrega").addEventListener("submit", function (e) {
   const notas = document.getElementById("input-notas").value;
 
   const tbody = document.querySelector("#tablaHistorial tbody");
+  const historial = JSON.parse(localStorage.getItem("historialEntregas")) || [];
+
 
   // recorrer los productos
   for (let i = 1; i <= numProductos; i++) {
@@ -212,22 +214,252 @@ document.getElementById("formEntrega").addEventListener("submit", function (e) {
 
     if (!codigo || !descripcion || !cantidad) continue; // no registrar si está vacío
 
+    const entrega = {
+      fecha: new Date().toLocaleString(),
+      asesora,
+      tecnico,
+      codigo,
+      descripcion,
+      cantidad,
+      notas: notas || "" // si no escribe nada queda vacío
+    };
+
     // Crear fila
     const fila = document.createElement("tr");
     fila.innerHTML = `
-      <td>${new Date().toLocaleString()}</td>
-      <td>${asesora}</td>
-      <td>${tecnico}</td>
-      <td>${codigo}</td>
-      <td>${descripcion}</td>
-      <td>${cantidad}</td>
+      <td>${entrega.fecha}</td>
+      <td>${entrega.asesora}</td>
+      <td>${entrega.tecnico}</td>
+      <td>${entrega.codigo}</td>
+      <td>${entrega.descripcion}</td>
+      <td>${entrega.cantidad}</td>
+      <td>${entrega.notas}</td>
     `;
-
     tbody.appendChild(fila);
+
+    // Guardar en historial local
+    historial.push(entrega);
   }
+
+  // actualizar localStorage
+  localStorage.setItem("historialEntregas", JSON.stringify(historial));
+
 
   // cerrar modal y limpiar formulario
   document.getElementById("modalEntrega").style.display = "none";
   document.getElementById("formEntrega").reset();
   document.getElementById("contenedor-productos").innerHTML = "";
+});
+
+
+/* =========================
+   LOCALSTORAGE: HISTORIAL
+   ========================= */
+
+// Guardar historial en localStorage
+function guardarHistorial() {
+  const filas = [];
+  document.querySelectorAll("#tablaHistorial tbody tr").forEach(tr => {
+    const celdas = tr.querySelectorAll("td");
+    filas.push({
+      fecha: celdas[0].textContent,
+      asesora: celdas[1].textContent,
+      tecnico: celdas[2].textContent,
+      codigo: celdas[3].textContent,
+      descripcion: celdas[4].textContent,
+      cantidad: celdas[5].textContent
+    });
+  });
+  localStorage.setItem("historialEntregas", JSON.stringify(filas));
+}
+
+// Cargar historial desde localStorage
+function cargarHistorial() {
+  const historialGuardado = localStorage.getItem("historialEntregas");
+  if (!historialGuardado) return;
+
+  const filas = JSON.parse(historialGuardado);
+  const tbody = document.querySelector("#tablaHistorial tbody");
+
+  filas.forEach(fila => {
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${fila.fecha}</td>
+      <td>${fila.asesora}</td>
+      <td>${fila.tecnico}</td>
+      <td>${fila.codigo}</td>
+      <td>${fila.descripcion}</td>
+      <td>${fila.cantidad}</td>
+      <td>${fila.notas}</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Ejecutar al cargar la página
+document.addEventListener("DOMContentLoaded", cargarHistorial);
+
+// Modificar tu submit de registro para que guarde después de agregar las filas:
+document.getElementById("formEntrega").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const asesora = document.getElementById("input-asesora").value;
+  const tecnico = document.getElementById("select-tecnico").value;
+  const tecnicoTexto = document.querySelector(`#select-tecnico option[value="${tecnico}"]`)?.textContent || "";
+
+  const numProductos = parseInt(document.getElementById("input-num-productos").value, 10);
+  const tbody = document.querySelector("#tablaHistorial tbody");
+
+  for (let i = 1; i <= numProductos; i++) {
+    const codigo = document.querySelector(`[name="codigo_${i}"]`)?.value || "";
+    const descripcion = document.querySelector(`[name="descripcion_${i}"]`)?.value || "";
+    const cantidad = document.querySelector(`[name="cantidad_${i}"]`)?.value || "1";
+
+    if (!codigo || !descripcion) continue;
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${new Date().toLocaleString()}</td>
+      <td>${asesora}</td>
+      <td>${tecnicoTexto}</td>
+      <td>${codigo}</td>
+      <td>${descripcion}</td>
+      <td>${cantidad}</td>
+    `;
+    tbody.appendChild(tr);
+  }
+
+  // ✅ Guardar en localStorage después de registrar
+  guardarHistorial();
+
+  // Resetear y cerrar modal
+  this.reset();
+  document.getElementById("modalEntrega").style.display = "none";
+});
+
+// =============================
+// BORRAR HISTORIAL
+// =============================
+document.getElementById("borrarHistorial").addEventListener("click", function () {
+  if (confirm("¿Seguro que quieres borrar todo el historial de entregas?")) {
+    localStorage.removeItem("historialEntregas"); // Limpiar localStorage
+    document.querySelector("#tablaHistorial tbody").innerHTML = ""; // Limpiar tabla
+  }
+});
+
+// =============================
+// FILTROS DE BUSQUEDA
+// =============================
+
+const filtroAsesora = document.getElementById("filtroAsesora");
+const filtroTecnico = document.getElementById("filtroTecnico");
+const filtroCodigo = document.getElementById("filtroCodigo");
+
+function aplicarFiltros() {
+  const valorAsesora = filtroAsesora.value.toLowerCase();
+  const valorTecnico = filtroTecnico.value.toLowerCase();
+  const valorCodigo = filtroCodigo.value.toLowerCase();
+
+  const filas = document.querySelectorAll("#tablaHistorial tbody tr");
+
+  filas.forEach(fila => {
+    const asesora = fila.cells[1]?.textContent.toLowerCase() || "";
+    const tecnico = fila.cells[2]?.textContent.toLowerCase() || "";
+    const codigo = fila.cells[3]?.textContent.toLowerCase() || "";
+
+    // Mostrar solo si cumple con los filtros
+    const coincide =
+      asesora.includes(valorAsesora) &&
+      tecnico.includes(valorTecnico) &&
+      codigo.includes(valorCodigo);
+
+    fila.style.display = coincide ? "" : "none";
+  });
+}
+
+// Escuchar cambios en los inputs
+[filtroAsesora, filtroTecnico, filtroCodigo].forEach(input => {
+  input.addEventListener("input", aplicarFiltros);
+});
+
+
+// =============================
+// EXPORTAR PDF
+// =============================
+const btnExportarPDF = document.getElementById("exportarPDF");
+
+btnExportarPDF.addEventListener("click", () => {
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF();
+
+  // Título
+  doc.setFontSize(16);
+  doc.text("Moto Reyes - Sede principal", 10, 11);
+  doc.text("Informe - Historial de entregas auxiliar", 19, 20);
+  
+  // Convertir tabla a PDF
+  doc.autoTable({
+    html: "#tablaHistorial",  // usa la tabla directamente
+    startY: 25,               // margen desde arriba
+    styles: { fontSize: 10 },
+    headStyles: { fillColor: [52, 73, 94] }, // color gris oscuro
+  });
+
+  // guardar PDF
+  doc.save("Historial_Entregas.pdf");
+});
+
+
+// ============================
+// BLOQUEO POR PIN
+// ============================
+document.addEventListener("DOMContentLoaded", () => {
+  const modalPin = document.getElementById("modal-pin");
+  const inputPin = document.getElementById("input-pin");
+  const btnDesbloquear = document.getElementById("btn-desbloquear");
+
+  const PIN_CORRECTO = "2025";
+
+  // Activar blur en todo el body
+  document.body.classList.add("blur");
+
+  // Mostrar modal al cargar (con fallback)
+  if (typeof modalPin.showModal === "function") {
+    modalPin.showModal();
+  } else {
+    // Fallback Safari / navegadores sin <dialog>
+    modalPin.style.display = "block";
+    modalPin.style.position = "fixed";
+    modalPin.style.top = "50%";
+    modalPin.style.left = "50%";
+    modalPin.style.transform = "translate(-50%, -50%)";
+    modalPin.style.zIndex = "10000";
+  }
+
+  // Función de desbloqueo
+  function desbloquear() {
+    if (inputPin.value === PIN_CORRECTO) {
+      if (typeof modalPin.close === "function") {
+        modalPin.close();
+      } else {
+        modalPin.style.display = "none";
+      }
+      document.body.classList.remove("blur");
+    } else {
+      alert("❌ PIN incorrecto. Intenta de nuevo.");
+      inputPin.value = "";
+      inputPin.focus();
+    }
+  }
+
+  // Evento click
+  btnDesbloquear.addEventListener("click", desbloquear);
+
+  // Permitir Enter en el input
+  inputPin.addEventListener("keyup", (e) => {
+    if (e.key === "Enter") desbloquear();
+  });
+
+  // Forzar foco en el input
+  inputPin.focus();
 });

@@ -82,6 +82,7 @@
           <input type="text" id="filtroTecnico" placeholder="Filtrar por técnico">
           <input type="text" id="filtroCodigo" placeholder="Filtrar por código">
           <button id="exportarPDF">Exportar PDF</button>
+          <button id="borrarHistorial">Borrar historial</button>
         </div>
       </div>
 
@@ -95,10 +96,11 @@
               <th>Código producto</th>
               <th>Descripción producto</th>
               <th>Cantidad</th>
+              <th>Notas (opcional)</th>
             </tr>
           </thead>
           <tbody>
-            <!-- Filas dinámicas se llenarán con JS -->
+            <!-- Filas dinámicas se llenarán con JS en el archivo script.js -->
           </tbody>
         </table>
       </div>
@@ -164,6 +166,31 @@
     </div>
   </div>
 
+<!-- Modal de PIN -->
+<dialog id="modal-pin" class="modal-pin" aria-labelledby="titulo-pin">
+  <form id="form-pin" method="dialog">
+    <h3 id="titulo-pin">🔒 Ingresar PIN</h3>
+    <p>La página está bloqueada. Ingresa tu PIN de 4 dígitos para continuar.</p>
+    
+    <div class="campo">
+      <label for="input-pin">PIN</label>
+      <input id="input-pin" type="password" inputmode="numeric" maxlength="4" required />
+    </div>
+
+    <div class="modal-acciones">
+      <button type="button" class="btn-primario" id="btn-desbloquear">Desbloquear</button>
+    </div>
+  </form>
+</dialog>
+
+
+
+
   <script src="script.js"></script>
+
+  <!-- EXPORTACIÓN DE UNA LIBRERÍA EN JAVASCRIPT  -->
+   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
 </body>
 </html>

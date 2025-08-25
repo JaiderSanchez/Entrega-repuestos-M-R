@@ -63,10 +63,10 @@ header {
 }
 
 .card-asesora img {
-  width: 80px;
-  height: 80px;
-  border-radius: 50%;
-  margin-bottom: 10px;
+  width: 120px;
+  height: 120px;
+  border-radius: 95%;
+  margin-bottom: 20px;
 }
 
 .card-asesora h3 {
@@ -307,22 +307,101 @@ tbody tr:nth-child(even) {
 
 
 /* Efecto blur solo en el contenido */
-/* body.blur main,
-body.blur header,
-body.blur nav {
+/* ===== BLUR DE LA PÁGINA CUANDO ESTÁ BLOQUEADA ===== */
+.blur  {
   filter: blur(6px);
-  pointer-events: none;
+  pointer-events: none; /* Evita clics mientras está bloqueada */
   user-select: none;
-} */
-
-/* Modal PIN estilo */
-/* .modal-pin {
-  text-align: center;
-  z-index: 9999; 
 }
-.modal-pin input {
-  font-size: 1.5rem;
-  letter-spacing: 6px;
+
+/* ===== Estilo modal ===== */
+.modal-pin {
+  border: none;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 350px;
+  width: 90%;
   text-align: center;
-  padding: 12px;
-} */
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+  background: #fff;
+  animation: aparecer 0.3s ease;
+  pointer-events: auto; /* importante para que funcione sobre el blur */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+}
+
+.modal-pin::backdrop {
+  background: rgba(0,0,0,0.5);
+}
+
+.modal-pin h3 {
+  margin-bottom: 10px;
+}
+
+.campo {
+  margin: 15px 0;
+  text-align: left;
+}
+
+.campo label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: 600;
+}
+
+.campo input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #bbb;
+  border-radius: 8px;
+  font-size: 16px;
+  text-align: center;
+  letter-spacing: 4px; /* Efecto de dígitos */
+}
+
+.modal-acciones {
+  margin-top: 20px;
+}
+
+.btn-primario {
+  background: #3498db; /* Un color azul más vibrante y universalmente reconocido */
+  color: #fff;
+  border: none;
+  padding: 12px 25px; /* Más padding para un botón más grande y visible */
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+  transition: all 0.3s ease; /* Transición para todas las propiedades */
+}
+
+.btn-primario:hover {
+  background: #2980b9; /* Color más oscuro al pasar el cursor */
+  transform: translateY(-2px); /* Un pequeño levantamiento para un efecto 3D */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.btn-primario:active {
+  transform: translateY(0); /* Vuelve a su posición original al hacer clic */
+  box-shadow: none;
+}
+
+/* Animación suave */
+@keyframes aparecer {
+  from { transform: scale(0.9); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+
+
+/* Fallback Safari / navegadores sin <dialog> */
+#modal-pin[style*="display: block"] {
+  display: block;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 10000;
+}
