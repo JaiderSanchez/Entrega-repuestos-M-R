@@ -93,43 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 
-// MANEJO PIN
-
-
-// document.addEventListener("DOMContentLoaded", () => {
-//   const modalPin = document.getElementById("modal-pin");
-//   const inputPin = document.getElementById("input-pin");
-//   const btnDesbloquear = document.getElementById("btn-desbloquear");
-
-//   const PIN_CORRECTO = "2025";
-
-//   // Activa blur y abre modal
-//   document.body.classList.add("blur");
-//   if (typeof modalPin.showModal === "function") {
-//     modalPin.showModal();
-//   } else {
-//     // fallback si el navegador no soporta showModal
-//     modalPin.setAttribute("open", "");
-//   }
-
-//   btnDesbloquear.addEventListener("click", () => {
-//     if (inputPin.value === PIN_CORRECTO) {
-//       // Cerrar modal
-//       if (typeof modalPin.close === "function") {
-//         modalPin.close();
-//       } else {
-//         modalPin.removeAttribute("open");
-//       }
-
-//       // Quitar blur
-//       document.body.classList.remove("blur");
-//     } else {
-//       alert("PIN incorrecto. Intenta de nuevo.");
-//       inputPin.value = "";
-//       inputPin.focus();
-//     }
-//   });
-// });
 
 
 /* =========================
@@ -173,30 +136,56 @@ window.addEventListener("click", (e) => {
 const inputNumProductos = document.getElementById("input-num-productos");
 const contenedorProductos = document.getElementById("contenedor-productos");
 
-// Escuchar cambios en el número de productos
 inputNumProductos.addEventListener("input", () => {
-  contenedorProductos.innerHTML = ""; // limpiar antes de generar nuevos
+  contenedorProductos.innerHTML = ""; // limpiar antes de generar
 
   const num = parseInt(inputNumProductos.value) || 0;
 
   for (let i = 1; i <= num; i++) {
-    // Crear contenedor de producto
     const div = document.createElement("div");
     div.classList.add("producto-item");
 
-    // Plantilla de un producto dinámico
+    // Cada input de código tendrá su propio datalist
     div.innerHTML = `
       <h4>Producto ${i}</h4>
+
       <label>Código:</label>
-      <input type="text" name="codigo_${i}" required>
-      
+      <input type="text" name="codigo_${i}" class="input-codigo" list="datalist-codigos-${i}" required>
+      <datalist id="datalist-codigos-${i}"></datalist>
+
       <label>Descripción:</label>
-      <input type="text" name="descripcion_${i}" required>
-      
+      <input type="text" name="descripcion_${i}" class="input-descripcion" required>
+
       <label>Cantidad:</label>
       <input type="number" name="cantidad_${i}" min="1" value="1" required>
     `;
 
     contenedorProductos.appendChild(div);
+
+    // --- Autocompletado con inventario ---
+    const inputCodigo = div.querySelector(".input-codigo");
+    const inputDescripcion = div.querySelector(".input-descripcion");
+    const datalist = div.querySelector("datalist");
+
+    // Llenar el datalist con TODOS los códigos (una sola vez al crear)
+    inventario.forEach(p => {
+      const option = document.createElement("option");
+      option.value = p.codigo;
+      option.textContent = p.descripcion; // 👈 aunque no todos los navegadores muestran textContent
+      datalist.appendChild(option);
+    });
+
+    // Cuando el usuario escribe o selecciona un código
+    inputCodigo.addEventListener("input", () => {
+      const codigoIngresado = inputCodigo.value.trim();
+
+      const producto = inventario.find(p => p.codigo === codigoIngresado);
+
+      if (producto) {
+        inputDescripcion.value = producto.descripcion;
+      } else {
+        inputDescripcion.value = "";
+      }
+    });
   }
 });
