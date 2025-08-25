@@ -5,12 +5,13 @@
 // Asesoras
 const asesoras = [
   { id: 1, nombre: "Zharon" },
-  { id: 2, nombre: "Yaqueline" },
-  { id: 3, nombre: "Mairen" },
-  { id: 4, nombre: "Fraimel" },
-  { id: 5, nombre: "Katherine" },
-  { id: 6, nombre: "Leidy" },
-  { id: 7, nombre: "Sandra" }
+  { id: 2, nombre: "Patricia" },
+  { id: 3, nombre: "Yaqueline" },
+  { id: 4, nombre: "Mairen" },
+  { id: 5, nombre: "Fraimel" },
+  { id: 6, nombre: "Katherine" },
+  { id: 7, nombre: "Leidy" },
+  { id: 8, nombre: "Sandra" }
 ];
 
 // Técnicos
