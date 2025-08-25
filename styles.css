@@ -1,196 +1,328 @@
-:root{
-  --bg:#f6f7fb;
-  --card:#ffffff;
-  --header: #0004d3;
-  --text:#1f2937;
-  --muted:#6b7280;
-  --brand:#0ea5e9;
-  --brand-700:#0284c7;
-  --brand-800:#d44d4d;
-  --ring:#93c5fd;
-  --border:#e5e7eb;
-  --ok:#22c55e;
+/* Fuente global */
+body {
+  font-family: 'Roboto', sans-serif;
+  margin: 0;
+  padding: 0;
+  background-color: #ffffff;
+  color: #333;
 }
 
-*{ box-sizing: border-box; }
-
-html,body{
-  margin:0;
-  padding:0;
-  font-family: system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
-  color:var(--text);
-  background:var(--bg);
+/* HEADER */
+header {
+  background-color: #0004d3;
+  color: #fff;
+  padding: 10px 20px;
 }
 
-.app-header{
-  display:flex;
-  align-items:center;
-  gap:16px;
-  padding:16px;
-  background:var(--header);
-  border-bottom:1px solid var(--border);
-}
-.logo{ height:56px; width:auto; border-radius:8px; object-fit:cover; }
-.titulo{ font-size:1.25rem; margin:0; color:#fff; }
-
-.app-nav{
-  display:flex;
-  gap:12px;
-  padding:10px 16px;
-  border-bottom:1px solid var(--border);
-  background:linear-gradient(180deg, #fff, #fafafa);
-}
-.app-nav a{
-  text-decoration:none;
-  color:var(--brand-700);
-  font-weight:600;
+.header-container {
+  display: flex;
+  align-items: center;
+  gap: 15px;
 }
 
-main{ padding:20px; }
-
-.asesoras{
-  display:grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap:16px;
+.logo {
+  height:90px; 
+  width:auto; 
+  border-radius:8px; 
+  object-fit:cover;
 }
 
-.contenedor-asesora{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  padding:16px;
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  gap:10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,.04);
-}
-.asesora__foto{
-  width:84px; height:84px; border-radius:999px; object-fit:cover; border:1px solid var(--border);
-}
-.asesora__nombre{ margin:6px 0 0; font-size:1rem; }
-
-.btn-recibir,
-button{
-  appearance:none;
-  border:1px solid var(--brand);
-  background:var(--brand);
-  color:#fff;
-  padding:10px 12px;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:600;
-}
-button:hover{ background:var(--brand-700); border-color:var(--brand-700); }
-
-.btn-cancelar{
-  /* appearance:none; */
-  border:1px solid var(--brand-800);
-  background:var(--brand-800);
-  color:#fff;
-  padding:10px 12px;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:600;
-}
-/* .btn-cancelar:hover{ background-color: #d44d4d;} */
-
-.btn-cancelar:hover {
-  filter: brightness(.9);
-}
-
-
-.acciones{
-  display:flex; align-items:center; gap:12px;
-  margin:20px 0 8px;
-}
-.acciones button {
-  margin-right: 8px;
-}
-.acciones__ayuda{ color:var(--muted); font-size:.9rem; }
-
-.historial__encabezado{
-  display:flex; justify-content:space-between; align-items:center;
-  gap:12px; margin:8px 0 12px;
-}
-#filtro-historial{
-  padding:10px 12px; border:1px solid var(--border); border-radius:12px; width:320px; max-width:60vw;
-}
-
-/* Estilos y propiedades para la tabla */
-
-.tabla-wrapper{ overflow:auto; border:1px solid var(--border); border-radius:12px; background:var(--card); }
-.tabla{ width:100%; border-collapse:collapse; }
-.tabla th, .tabla td{ padding:10px 12px; border-bottom:1px solid var(--border); text-align:left; }
-.tabla thead th{ background:#f9fafb; }
-@media (max-width: 640px) {
-  .tabla th, .tabla td {
-    padding: 8px;
-    font-size: 0.85rem;
-  }
-}
-
-.modal{
-  border:none; border-radius:16px; padding:0; width:min(560px, 92vw);
-  box-shadow: 0 25px 80px rgba(0,0,0,.2);
-}
-.modal::backdrop{ background:rgba(0,0,0,.35); }
-
-#form-recepcion{ padding:16px 16px 10px; }
-#form-recepcion h3{ margin:0 0 10px; }
-.campo{ display:flex; flex-direction:column; gap:6px; margin:10px 0; }
-.campo input, .campo select, .campo textarea{
-  padding:10px 12px; border:1px solid var(--border); border-radius:12px; outline:none;
-}
-.campo input:focus, .campo select:focus, .campo textarea:focus{ border-color:var(--ring); box-shadow:0 0 0 3px rgba(147,197,253,.35); }
-
-.modal__acciones{
-  display:flex; justify-content:flex-end; gap:10px; padding-top:8px;
-}
-.btn-primario{ background:var(--ok); border-color:var(--ok); }
-.btn-primario:hover{ filter:brightness(.95); }
-
-
-.sin-stock {
-  color: red;
+.titulo {
+  font-size: 1.2rem;
   font-weight: bold;
 }
 
-.con-stock {
-  color: green;
+/* SECCIÓN ASESORAS */
+.asesoras {
+  padding: 20px;
 }
 
-/* Como en el HTML metí una etiqueta oculta para el filtro, necesitaré esta utilidad: */
-.visually-hidden {
-  position: absolute;
-  width: 1px;
-  height: 1px;
-  padding: 0;
-  margin: -1px;
-  overflow: hidden;
-  clip: rect(0, 0, 0, 0);
-  white-space: nowrap;
-  border: 0;
+.asesoras h2 {
+  margin-bottom: 15px;
+  color: #0004d3;
 }
+
+.asesoras-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+}
+
+.card-asesora {
+  background-color: #f9f9f9;
+  border: 1px solid #ddd;
+  border-radius: 12px;
+  text-align: center;
+  padding: 15px;
+  transition: transform 0.2s ease;
+}
+
+.card-asesora:hover {
+  transform: translateY(-5px);
+  box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+}
+
+.card-asesora img {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  margin-bottom: 10px;
+}
+
+.card-asesora h3 {
+  margin: 5px 0;
+}
+
+.card-asesora button {
+  background-color: #0004d3;
+  color: #fff;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.card-asesora button:hover {
+  background-color: #002bb5;
+}
+
+/* HISTORIAL */
+.historial {
+  padding: 20px;
+}
+
+.historial-header {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+
+.historial-header h2 {
+  color: #0004d3;
+}
+
+.acciones-tabla {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.acciones-tabla input {
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  flex: 1;
+  min-width: 150px;
+}
+
+.acciones-tabla button {
+  background-color: #0004d3;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.acciones-tabla button:hover {
+  background-color: #002bb5;
+}
+
+/* TABLA */
+.tabla-container {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: #fff;
+}
+
+thead {
+  background-color: #0004d3;
+  color: #fff;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #f5f5f5;
+}
+
+/* RESPONSIVE */
+@media (max-width: 600px) {
+  .titulo {
+    font-size: 1rem;
+  }
+  .acciones-tabla {
+    flex-direction: column;
+  }
+}
+
+
+.modal {
+  display: none; /* oculto por defecto */
+  position: fixed;
+  z-index: 1000;
+  inset: 0;
+  background-color: rgba(0,0,0,0.5);
+  backdrop-filter: blur(3px);
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+}
+
+.modal-contenido {
+  background: #fff;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 100%;
+  animation: aparecer 0.3s ease;
+}
+
+@keyframes aparecer {
+  from { transform: scale(0.9); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.modal h2 {
+  margin-top: 0;
+  margin-bottom: 15px;
+  color: #0004d3;
+  font-size: 1.2rem;
+}
+
+/* Campos del formulario */
+.campo {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+}
+
+.campo label {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.campo input,
+.campo select,
+.campo textarea {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+/* BOTONES DEL MODAL */
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 15px;
+}
+
+.btn-primario {
+  background-color: #0004d3;
+  color: #fff;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-primario:hover {
+  background-color: #002bb5;
+}
+
+.btn-cancelar {
+  background-color: #ccc;
+  color: #000;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.btn-cancelar:hover {
+  background-color: #999;
+}
+
+/* RESPONSIVE */
+@media (max-width: 480px) {
+  .modal-contenido {
+    max-width: 100%;
+  }
+}
+
+
+
+
+/* CÓDIGO SCROLL PARA EL MODAL*/
+
+/* Contenedor interno del modal con scroll */
+.modal-content {
+  max-height: 80vh; /* no ocupar toda la pantalla */
+  overflow-y: auto; /* permitir scroll */
+  padding-right: 10px; /* espacio para scroll */
+}
+
+/* Estilos para productos dinámicos */
+.producto-item {
+  background: #f9f9f9;
+  padding: 10px;
+  margin-bottom: 12px;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.producto-item h4 {
+  margin-bottom: 8px;
+  font-size: 1rem;
+  color: #333;
+}
+
+.producto-item label {
+  display: block;
+  margin-top: 6px;
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #444;
+}
+
+.producto-item input {
+  width: 100%;
+  padding: 6px;
+  margin-top: 2px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+
 
 /* Efecto blur solo en el contenido */
-body.blur main,
+/* body.blur main,
 body.blur header,
 body.blur nav {
   filter: blur(6px);
   pointer-events: none;
   user-select: none;
-}
+} */
 
 /* Modal PIN estilo */
-.modal-pin {
+/* .modal-pin {
   text-align: center;
-  z-index: 9999; /* asegura que quede por encima del blur */
+  z-index: 9999; 
 }
 .modal-pin input {
   font-size: 1.5rem;
   letter-spacing: 6px;
   text-align: center;
   padding: 12px;
-}
-
+} */

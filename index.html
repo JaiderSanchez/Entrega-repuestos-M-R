@@ -1,22 +1,26 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <link rel="stylesheet" href="styles.css"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>MOTO REYES S.A.S</title>
+  <link rel="stylesheet" href="styles.css">
+  <!-- Fuente Google -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto&display=swap" rel="stylesheet">
 </head>
 <body>
-  <header class="app-header">
-    <img src="logo-moto-reyes.jpg" alt="Logo MOTO REYES S.A.S" class="logo"/>
-    <h1 class="titulo">Entrega de Repuestos - Auxiliar</h1>
-  </header>
-  <nav class="app-nav" aria-label="Navegación principal">
-    <a href="#asesoras">Asesoras</a>
-    <a href="#historial">Historial</a>
-  </nav>
 
-  <!-- Modal de PIN -->
+  <!-- HEADER -->
+  <header>
+    <div class="header-container">
+      <img src="logo-moto-reyes.jpg" alt="Logo Moto Reyes" class="logo">
+      <h1 class="titulo">ENTREGA DE REPUESTOS - AUXILIAR</h1>
+    </div>
+  </header>
+
+
+
+    <!-- Modal de PIN -->
 <dialog id="modal-pin" class="modal modal-pin" aria-labelledby="titulo-pin">
   <form id="form-pin">
     <h3 id="titulo-pin">Ingresar PIN</h3>
@@ -33,121 +37,149 @@
   </form>
 </dialog>
 
+
   <main>
-    <!-- Tarjetas de asesoras (se rellenan desde JS) -->
-    <section id="asesoras" class="asesoras" aria-label="Asesoras que entregan repuestos">
-      <!-- JS inserta aquí -->
-    </section>
 
-    <section class="acciones">
-      <!-- <button id="btn-exportar-csv">Exportar CSV</button> -->
-      <button id="btn-exportar-pdf">Exportar PDF</button>
-      <span class="acciones__ayuda">
-        Los datos se guardan localmente (localStorage) mientras no haya backend.
-      </span>
-    </section>
+    <!-- SECCIÓN ASESORAS -->
+    <section class="asesoras">
+      <h2>Asesoras</h2>
+      <div class="asesoras-grid">
+        
+        <div class="card-asesora">
+          <img src="sin_foto_perfil.jpg" alt="Asesora Zharon">
+          <h3>Zharon</h3>
+          <button>Recibir repuesto</button>
+        </div>
 
-    <!-- Historial -->
-    <section id="historial" class="historial" aria-labelledby="titulo-historial">
-      <div class="historial__encabezado">
-        <h2 id="titulo-historial">Historial de entregas</h2>
-        <label for="filtro-historial" class="visually-hidden">Buscar en historial</label>
-        <input id="filtro-historial" type="search" placeholder="Filtrar por asesora, técnico o ítem..."/>
+        <div class="card-asesora">
+          <img src="sin_foto_perfil.jpg" alt="Asesora Yaqueline">
+          <h3>Yaqueline</h3>
+          <button>Recibir repuesto</button>
+        </div>
+
+        <div class="card-asesora">
+          <img src="sin_foto_perfil.jpg" alt="Asesora Mairen">
+          <h3>Mairen</h3>
+          <button>Recibir repuesto</button>
+        </div>
+
+        <div class="card-asesora">
+          <img src="sin_foto_perfil.jpg" alt="Asesora Fraimel">
+          <h3>Fraimel</h3>
+          <button>Recibir repuesto</button>
+        </div>
+
+        <div class="card-asesora">
+          <img src="sin_foto_perfil.jpg" alt="Asesora Katherine">
+          <h3>Katherine</h3>
+          <button>Recibir repuesto</button>
+        </div>
+
+        <div class="card-asesora">
+          <img src="sin_foto_perfil.jpg" alt="Asesora Leidy">
+          <h3>Leidy</h3>
+          <button>Recibir repuesto</button>
+        </div>
+
+        <div class="card-asesora">
+          <img src="sin_foto_perfil.jpg" alt="Asesora Sandra">
+          <h3>Sandra</h3>
+          <button>Recibir repuesto</button>
+        </div>
+
       </div>
-      <div class="tabla-wrapper">
-        <table class="tabla" aria-describedby="titulo-historial">
+    </section>
+
+    <!-- HISTORIAL -->
+    <section class="historial">
+      <div class="historial-header">
+        <h2>Historial de entregas</h2>
+        <div class="acciones-tabla">
+          <input type="text" id="filtroAsesora" placeholder="Filtrar por asesora">
+          <input type="text" id="filtroTecnico" placeholder="Filtrar por técnico">
+          <input type="text" id="filtroCodigo" placeholder="Filtrar por código">
+          <button id="exportarPDF">Exportar PDF</button>
+        </div>
+      </div>
+
+      <div class="tabla-container">
+        <table id="tablaHistorial">
           <thead>
             <tr>
-              <th scope="col">Fecha y hora</th>
-              <th scope="col">Asesora</th>
-              <th scope="col">Técnico</th>
-              <th scope="col">Ítem</th>
-              <th scope="col">Categoría</th>
-              <th scope="col">Cantidad</th>
-              <th scope="col">Notas</th>
+              <th>Fecha y hora</th>
+              <th>Asesora</th>
+              <th>Técnico</th>
+              <th>Código producto</th>
+              <th>Descripción producto</th>
+              <th>Cantidad</th>
             </tr>
           </thead>
-          <tbody id="tbody-historial">
-            <!-- JS inserta aquí -->
+          <tbody>
+            <!-- Filas dinámicas se llenarán con JS -->
           </tbody>
         </table>
       </div>
     </section>
+
   </main>
 
-  <!-- Modal de registro de entrega -->
-  <dialog id="modal-recepcion" class="modal" aria-labelledby="titulo-modal">
-    <form id="form-recepcion" method="dialog">
-      <h3 id="titulo-modal">Registrar entrega</h3>
 
-      <div class="campo">
-        <label for="asesora-seleccionada">Asesora</label>
-        <input id="asesora-seleccionada" type="text" readonly aria-readonly="true"/>
-      </div>
+  <!-- MODAL REGISTRAR ENTREGA -->
+  <div id="modalEntrega" class="modal">
+    <div class="modal-contenido">
+      <h2><strong>Registrar entrega</strong></h2>
 
-      <div class="campo">
-        <label for="select-tecnico">Técnico</label>
-        <select id="select-tecnico" required></select>
-      </div>
+      <form id="formEntrega">
+        <!-- ASESSORA -->
+        <div class="campo">
+          <label for="input-asesora">Asesora</label>
+          <input type="text" id="input-asesora" readonly>
+        </div>
 
-      <div class="campo">
-        <label for="input-numero-productos">Número de productos:</label>
-        <input id="input-numero-productos" type="number" min="1" step="1" required/>
-      </div>
+        <!-- TÉCNICO -->
+        <div class="campo">
+          <label for="select-tecnico">Técnico</label>
+          <select id="select-tecnico">
+            <optgroup label="Piso 1">
+              <option value="100">Fransisco</option>
+              <option value="200">Miguel</option>
+              <option value="300">Freddy Montaña</option>
+              <option value="400">Sebastián</option>
+            </optgroup>
+            <optgroup label="Piso 2">
+              <option value="1">Darío</option>
+              <option value="2">Ányelo</option>
+              <option value="3">Jairo</option>
+              <option value="4">Henry Tumay</option>
+              <option value="6">Andrés Palláres</option>
+              <option value="7">Freddy Franco</option>
+            </optgroup>
+          </select>
+        </div>
 
-      <div class="campo">
-        <label for="select-categoria">Categoría</label>
-        <select id="select-categoria" required>
-          <option value="">-- Selecciona una categoría --</option>
-          <option value="Repuestos">Repuestos</option>
-          <option value="Accesorios">Accesorios</option>
-          <option value="Aceites">Aceites</option>
-          <option value="Llantas">Llantas</option>
-          <option value="Neumáticos">Neumáticos</option>
-        </select>
-      </div>
+        <!-- NÚMERO DE PRODUCTOS -->
+        <div class="campo">
+          <label for="input-num-productos">Número de productos recibidos</label>
+          <input type="number" id="input-num-productos" min="1" value="1">
+        </div>
 
-      <div class="campo">
-        <label for="input-item">Ítem</label>
-        <input id="input-item" type="search" list="lista-items" placeholder="Escribe el nombre del producto..." required />
-        <datalist id="lista-items"></datalist>
-      </div>
+        <!-- PRODUCTOS (se llenarán dinámicamente con JS) -->
+        <div id="contenedor-productos"></div>
 
-      <div class="campo">
-        <label for="input-cantidad">Cantidad</label>
-        <input id="input-cantidad" type="number" min="1" step="1" required/>
-      </div>
+        <!-- NOTAS -->
+        <div class="campo">
+          <label for="input-notas">Notas (opcional)</label>
+          <textarea id="input-notas" rows="2" placeholder="Observaciones breves"></textarea>
+        </div>
 
-      <div class="campo">
-        <label for="input-notas">Notas (opcional)</label>
-        <textarea id="input-notas" rows="2" placeholder="Observaciones breves"></textarea>
-      </div>
-
-      <button type="button" id="btn-agregar-producto" class="btn-secundario">
-        Agregar producto
-      </button>
-
-      <div class="modal__acciones">
-        <!-- Cambié a type="reset" para limpiar el formulario cuando se cancela -->
-        <button type="reset" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
-        <button type="submit" id="btn-registrar" class="btn-primario">Registrar</button>
-      </div>
-    </form>
-  </dialog>
-
-  <!-- Plantilla para tarjeta de asesora -->
-  <template id="tpl-asesora">
-    <article class="contenedor-asesora">
-      <img src="sin_foto_perfil.jpg" alt="Foto de asesora" class="asesora__foto"/>
-      <h3 class="asesora__nombre"></h3>
-      <button class="btn-recibir" type="button">Recibir repuesto</button>
-    </article>
-  </template>
-
-
- 
-
-
+        <!-- BOTONES -->
+        <div class="modal-acciones"> 
+          <button type="reset" id="btn-cancelar" class="btn-cancelar">Cancelar</button>
+          <button type="submit" id="btn-registrar" class="btn-primario">Registrar</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
   <script src="script.js"></script>
 </body>
