@@ -189,3 +189,45 @@ inputNumProductos.addEventListener("input", () => {
     });
   }
 });
+
+
+// =============================
+// REGISTRAR ENTREGA
+// =============================
+document.getElementById("formEntrega").addEventListener("submit", function (e) {
+  e.preventDefault();
+
+  const asesora = document.getElementById("input-asesora").value;
+  const tecnico = document.getElementById("select-tecnico").selectedOptions[0].text;
+  const numProductos = parseInt(document.getElementById("input-num-productos").value, 10);
+  const notas = document.getElementById("input-notas").value;
+
+  const tbody = document.querySelector("#tablaHistorial tbody");
+
+  // recorrer los productos
+  for (let i = 1; i <= numProductos; i++) {
+    const codigo = document.querySelector(`input[name="codigo_${i}"]`)?.value || "";
+    const descripcion = document.querySelector(`input[name="descripcion_${i}"]`)?.value || "";
+    const cantidad = document.querySelector(`input[name="cantidad_${i}"]`)?.value || "";
+
+    if (!codigo || !descripcion || !cantidad) continue; // no registrar si está vacío
+
+    // Crear fila
+    const fila = document.createElement("tr");
+    fila.innerHTML = `
+      <td>${new Date().toLocaleString()}</td>
+      <td>${asesora}</td>
+      <td>${tecnico}</td>
+      <td>${codigo}</td>
+      <td>${descripcion}</td>
+      <td>${cantidad}</td>
+    `;
+
+    tbody.appendChild(fila);
+  }
+
+  // cerrar modal y limpiar formulario
+  document.getElementById("modalEntrega").style.display = "none";
+  document.getElementById("formEntrega").reset();
+  document.getElementById("contenedor-productos").innerHTML = "";
+});

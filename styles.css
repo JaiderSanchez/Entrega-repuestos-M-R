@@ -21,7 +21,7 @@ header {
 }
 
 .logo {
-  height:90px; 
+  height:auto; 
   width:auto; 
   border-radius:8px; 
   object-fit:cover;
