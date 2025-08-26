@@ -203,6 +203,19 @@ const inventario = [
 
 ];
 
+
+// CÓDIGO TOGGLE MODO OSCURO
+
+var toggle = document.getElementById('container');
+var body = document.querySelector('body');
+
+toggle.onclick = function() {
+  toggle.classList.toggle('active');
+  body.classList.toggle('active');
+} 
+
+///////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
+
 // const pisos = [1, 2]; // pisos donde hay técnicos
 
 

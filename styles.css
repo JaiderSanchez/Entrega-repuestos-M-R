@@ -1,5 +1,7 @@
 * {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 
@@ -11,6 +13,7 @@ body {
   padding: 0;
   background-color: #ffffff;
   color: #333;
+  transition: background 0.3s ease;
 }
 
 /* HEADER */
@@ -25,6 +28,52 @@ header {
   align-items: center;
   gap: 15px;
 }
+
+/* ESTILOS Y PROPIEDADES PARA EL MODO OSCURO */
+#container {
+  background: #e0e0e0;
+  position: relative;
+  width: 80px;
+  height: 40px;
+  border-radius: 25px;
+  box-shadow: inset 4px 4px 6px #cfcfcf,
+              inset -4px -4px 6px #ffffff;
+  cursor: pointer;
+  transition: background 0.3s ease;          
+}
+
+.toggle {
+  position: absolute;
+  top: 4px;
+  left: 4px;
+  width: 32px;
+  height: 32px;
+  background: linear-gradient(145deg, #ffffff, #dcdcdc);
+  border-radius: 50%;
+  box-shadow: 3px 3px 6px #c4c4c4,
+              -3px -3px 6px #fff;
+  transition: left 0.3s ease, background 0.3s ease;
+}
+
+#container.active {
+  background: #ffffff;
+  box-shadow: inset 4px 4px 6px #e4e4e4,
+              inset -4px -4px 6px #f0f0f0;
+}
+
+#container.active .toggle {
+  left: 44px;
+  background: linear-gradient(145deg, #333, #555);
+  box-shadow: 3px 3px 6px #ffffff,
+              -3px -3px 6px #ffffff;
+}
+
+body.active {
+  background: #262525;
+}
+
+/* ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
+
 
 .logo {
   height:auto; 
