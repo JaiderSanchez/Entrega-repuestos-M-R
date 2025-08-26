@@ -1,3 +1,8 @@
+* {
+  box-sizing: border-box;
+}
+
+
 /* Fuente global */
 body {
   /* font-family: 'Roboto', sans-serif; */
@@ -184,10 +189,9 @@ tbody tr:nth-child(even) {
   background: #fff;
   padding: 20px;
   border-radius: 12px;
-  max-width: 500px;
-  width: 100%;
-  animation: aparecer 0.3s ease;
-
+  /* max-width: 500px; */
+  width: 850px;
+  animation: aparecer 0.4s ease;
   display: flex;
   flex-direction: column;
   max-height: 90vh;
