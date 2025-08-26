@@ -36,6 +36,7 @@ header {
   width: 80px;
   height: 40px;
   border-radius: 25px;
+  border: 2px solid #000000;
   box-shadow: inset 4px 4px 6px #cfcfcf,
               inset -4px -4px 6px #ffffff;
   cursor: pointer;
@@ -47,9 +48,10 @@ header {
   top: 4px;
   left: 4px;
   width: 32px;
-  height: 32px;
+  height: 30px;
   background: linear-gradient(145deg, #ffffff, #dcdcdc);
   border-radius: 50%;
+  border: 2px solid #000000;
   box-shadow: 3px 3px 6px #c4c4c4,
               -3px -3px 6px #fff;
   transition: left 0.3s ease, background 0.3s ease;
@@ -62,7 +64,7 @@ header {
 }
 
 #container.active .toggle {
-  left: 44px;
+  left: 42px;
   background: linear-gradient(145deg, #333, #555);
   box-shadow: 3px 3px 6px #ffffff,
               -3px -3px 6px #ffffff;
@@ -70,6 +72,39 @@ header {
 
 body.active {
   background: #262525;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  font-size: 18px;
+  z-index: 0; /* Por debajo del toggle */
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+  color: #333;
+}
+
+.sun {
+  left: 10px;
+  opacity: 1;
+}
+
+.moon {
+  right: 10px;
+  opacity: 0;
+}
+
+#container.active .sun {
+  opacity: 0;
+}
+
+#container.active .moon {
+  opacity: 1;
+}
+
+.toggle {
+  z-index: 1; /* Asegúrate que esté por encima de los íconos */
 }
 
 /* ///////////////////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\ */
