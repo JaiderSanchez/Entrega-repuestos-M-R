@@ -1,3 +1,6 @@
+import { db } from "./firebaseConfig.js"; 
+import { collection, addDoc, serverTimestamp, getDocs } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-firestore.js";
+
 /* =========================
    DATOS BASE
    ========================= */
@@ -359,7 +362,7 @@ inputNumProductos.addEventListener("input", () => {
 // =============================
 // REGISTRAR ENTREGA
 // =============================
-document.getElementById("formEntrega").addEventListener("submit", function (e) {
+document.getElementById("formEntrega").addEventListener("submit", async function (e) {
   e.preventDefault();
 
   const asesora = document.getElementById("input-asesora").value;
@@ -388,6 +391,27 @@ document.getElementById("formEntrega").addEventListener("submit", function (e) {
       cantidad,
       notas: notas || "" // si no escribe nada queda vacío
     };
+
+  // =============================
+  // GUARDAR EN FIRESTORE
+  // =============================
+  try {
+    await addDoc(collection(db, "entregas"), {
+      codigoProducto: codigo,
+      descripcionProd: descripcion,
+      cantidad: parseInt(cantidad, 10),
+      tecnicoNombre: tecnico,
+      tecnicoId: 100,        // luego reemplazas dinámico
+      tecnicoPiso: 1,        // si aplica
+      notas: notas || "",
+      asesoraId: 1,          // luego reemplazas dinámico
+      asesoraNombre: asesora,
+      fechaHora: serverTimestamp()
+    });
+    console.log("Entrega guardada en Firestore ✅");
+  } catch (error) {
+    console.error("Error al guardar en Firestore: ", error);
+  }
 
     // Crear fila
     const fila = document.createElement("tr");
@@ -439,30 +463,88 @@ function guardarHistorial() {
 }
 
 // Cargar historial desde localStorage
-function cargarHistorial() {
-  const historialGuardado = localStorage.getItem("historialEntregas");
-  if (!historialGuardado) return;
+// function cargarHistorial() {
+//   const historialGuardado = localStorage.getItem("historialEntregas");
+//   if (!historialGuardado) return;
 
-  const filas = JSON.parse(historialGuardado);
+//   const filas = JSON.parse(historialGuardado);
+//   const tbody = document.querySelector("#tablaHistorial tbody");
+
+//   filas.forEach(fila => {
+//     const tr = document.createElement("tr");
+//     tr.innerHTML = `
+//       <td>${fila.fecha}</td>
+//       <td>${fila.asesora}</td>
+//       <td>${fila.tecnico}</td>
+//       <td>${fila.codigo}</td>
+//       <td>${fila.descripcion}</td>
+//       <td>${fila.cantidad}</td>
+//       <td>${fila.notas}</td>
+//     `;
+//     tbody.appendChild(tr);
+//   });
+// }
+
+// // Ejecutar al cargar la página
+// document.addEventListener("DOMContentLoaded", cargarHistorial);
+
+
+
+// === NUEVA FUNCIÓN ===
+async function cargarHistorial() {
   const tbody = document.querySelector("#tablaHistorial tbody");
+  tbody.innerHTML = ""; // limpiar tabla siempre al inicio
 
-  filas.forEach(fila => {
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${fila.fecha}</td>
-      <td>${fila.asesora}</td>
-      <td>${fila.tecnico}</td>
-      <td>${fila.codigo}</td>
-      <td>${fila.descripcion}</td>
-      <td>${fila.cantidad}</td>
-      <td>${fila.notas}</td>
-    `;
-    tbody.appendChild(tr);
-  });
+  // 🔹 1. Primero, cargar desde Firestore
+  try {
+    const querySnapshot = await getDocs(collection(db, "entregas"));
+    querySnapshot.forEach((doc) => {
+      const fila = doc.data();
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${fila.fechaHora?.toDate().toLocaleString() || ""}</td>
+        <td>${fila.asesoraNombre || ""}</td>
+        <td>${fila.tecnicoNombre || ""}</td>
+        <td>${fila.codigoProducto || ""}</td>
+        <td>${fila.descripcionProd || ""}</td>
+        <td>${fila.cantidad || ""}</td>
+        <td>${fila.notas || ""}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  } catch (error) {
+    console.error("Error al cargar entregas desde Firestore: ", error);
+  }
+
+  // 🔹 2. Luego, cargar desde localStorage
+  const historialGuardado = localStorage.getItem("historialEntregas");
+  if (historialGuardado) {
+    const filas = JSON.parse(historialGuardado);
+    filas.forEach(fila => {
+      const tr = document.createElement("tr");
+      tr.innerHTML = `
+        <td>${fila.fecha}</td>
+        <td>${fila.asesora}</td>
+        <td>${fila.tecnico}</td>
+        <td>${fila.codigo}</td>
+        <td>${fila.descripcion}</td>
+        <td>${fila.cantidad}</td>
+        <td>${fila.notas}</td>
+      `;
+      tbody.appendChild(tr);
+    });
+  }
 }
 
 // Ejecutar al cargar la página
 document.addEventListener("DOMContentLoaded", cargarHistorial);
+
+
+
+
+
+
+
 
 // Modificar tu submit de registro para que guarde después de agregar las filas:
 document.getElementById("formEntrega").addEventListener("submit", function (e) {
