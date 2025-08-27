@@ -414,24 +414,27 @@ document.getElementById("formEntrega").addEventListener("submit", async function
   }
 
     // Crear fila
-    const fila = document.createElement("tr");
-    fila.innerHTML = `
-      <td>${entrega.fecha}</td>
-      <td>${entrega.asesora}</td>
-      <td>${entrega.tecnico}</td>
-      <td>${entrega.codigo}</td>
-      <td>${entrega.descripcion}</td>
-      <td>${entrega.cantidad}</td>
-      <td>${entrega.notas}</td>
-    `;
-    tbody.appendChild(fila);
+    // const fila = document.createElement("tr");
+    // fila.innerHTML = `
+    //   <td>${entrega.fecha}</td>
+    //   <td>${entrega.asesora}</td>
+    //   <td>${entrega.tecnico}</td>
+    //   <td>${entrega.codigo}</td>
+    //   <td>${entrega.descripcion}</td>
+    //   <td>${entrega.cantidad}</td>
+    //   <td>${entrega.notas}</td>
+    // `;
+    // tbody.appendChild(fila);
 
-    // Guardar en historial local
-    historial.push(entrega);
+    // // Guardar en historial local
+    // historial.push(entrega);
   }
 
   // actualizar localStorage
-  localStorage.setItem("historialEntregas", JSON.stringify(historial));
+  // localStorage.setItem("historialEntregas", JSON.stringify(historial));
+
+
+  await cargarHistorial(); // 🔹 Refresca la tabla desde Firestore
 
 
   // cerrar modal y limpiar formulario
@@ -493,7 +496,7 @@ function guardarHistorial() {
 // === NUEVA FUNCIÓN ===
 async function cargarHistorial() {
   const tbody = document.querySelector("#tablaHistorial tbody");
-  tbody.innerHTML = ""; // limpiar tabla siempre al inicio
+  tbody.innerHTML = ""; // Limpiar tabla siempre al inicio
 
   // 🔹 1. Primero, cargar desde Firestore
   try {
@@ -517,23 +520,23 @@ async function cargarHistorial() {
   }
 
   // 🔹 2. Luego, cargar desde localStorage
-  const historialGuardado = localStorage.getItem("historialEntregas");
-  if (historialGuardado) {
-    const filas = JSON.parse(historialGuardado);
-    filas.forEach(fila => {
-      const tr = document.createElement("tr");
-      tr.innerHTML = `
-        <td>${fila.fecha}</td>
-        <td>${fila.asesora}</td>
-        <td>${fila.tecnico}</td>
-        <td>${fila.codigo}</td>
-        <td>${fila.descripcion}</td>
-        <td>${fila.cantidad}</td>
-        <td>${fila.notas}</td>
-      `;
-      tbody.appendChild(tr);
-    });
-  }
+  // const historialGuardado = localStorage.getItem("historialEntregas");
+  // if (historialGuardado) {
+  //   const filas = JSON.parse(historialGuardado);
+  //   filas.forEach(fila => {
+  //     const tr = document.createElement("tr");
+  //     tr.innerHTML = `
+  //       <td>${fila.fecha}</td>
+  //       <td>${fila.asesora}</td>
+  //       <td>${fila.tecnico}</td>
+  //       <td>${fila.codigo}</td>
+  //       <td>${fila.descripcion}</td>
+  //       <td>${fila.cantidad}</td>
+  //       <td>${fila.notas}</td>
+  //     `;
+  //     tbody.appendChild(tr);
+  //   });
+  // }
 }
 
 // Ejecutar al cargar la página
@@ -541,48 +544,43 @@ document.addEventListener("DOMContentLoaded", cargarHistorial);
 
 
 
-
-
-
-
-
 // Modificar tu submit de registro para que guarde después de agregar las filas:
-document.getElementById("formEntrega").addEventListener("submit", function (e) {
-  e.preventDefault();
+// document.getElementById("formEntrega").addEventListener("submit", function (e) {
+//   e.preventDefault();
 
-  const asesora = document.getElementById("input-asesora").value;
-  const tecnico = document.getElementById("select-tecnico").value;
-  const tecnicoTexto = document.querySelector(`#select-tecnico option[value="${tecnico}"]`)?.textContent || "";
+//   const asesora = document.getElementById("input-asesora").value;
+//   const tecnico = document.getElementById("select-tecnico").value;
+//   const tecnicoTexto = document.querySelector(`#select-tecnico option[value="${tecnico}"]`)?.textContent || "";
 
-  const numProductos = parseInt(document.getElementById("input-num-productos").value, 10);
-  const tbody = document.querySelector("#tablaHistorial tbody");
+//   const numProductos = parseInt(document.getElementById("input-num-productos").value, 10);
+//   const tbody = document.querySelector("#tablaHistorial tbody");
 
-  for (let i = 1; i <= numProductos; i++) {
-    const codigo = document.querySelector(`[name="codigo_${i}"]`)?.value || "";
-    const descripcion = document.querySelector(`[name="descripcion_${i}"]`)?.value || "";
-    const cantidad = document.querySelector(`[name="cantidad_${i}"]`)?.value || "1";
+//   for (let i = 1; i <= numProductos; i++) {
+//     const codigo = document.querySelector(`[name="codigo_${i}"]`)?.value || "";
+//     const descripcion = document.querySelector(`[name="descripcion_${i}"]`)?.value || "";
+//     const cantidad = document.querySelector(`[name="cantidad_${i}"]`)?.value || "1";
 
-    if (!codigo || !descripcion) continue;
+//     if (!codigo || !descripcion) continue;
 
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${new Date().toLocaleString()}</td>
-      <td>${asesora}</td>
-      <td>${tecnicoTexto}</td>
-      <td>${codigo}</td>
-      <td>${descripcion}</td>
-      <td>${cantidad}</td>
-    `;
-    tbody.appendChild(tr);
-  }
+//     const tr = document.createElement("tr");
+//     tr.innerHTML = `
+//       <td>${new Date().toLocaleString()}</td>
+//       <td>${asesora}</td>
+//       <td>${tecnicoTexto}</td>
+//       <td>${codigo}</td>
+//       <td>${descripcion}</td>
+//       <td>${cantidad}</td>
+//     `;
+//     tbody.appendChild(tr);
+//   }
 
-  // ✅ Guardar en localStorage después de registrar
-  guardarHistorial();
+//   // ✅ Guardar en localStorage después de registrar
+//   guardarHistorial();
 
-  // Resetear y cerrar modal
-  this.reset();
-  document.getElementById("modalEntrega").style.display = "none";
-});
+//   // Resetear y cerrar modal
+//   this.reset();
+//   document.getElementById("modalEntrega").style.display = "none";
+// });
 
 // =============================
 // BORRAR HISTORIAL
