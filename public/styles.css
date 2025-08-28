@@ -18,7 +18,7 @@ body {
 
 /* HEADER */
 header {
-  background-color: #0004d3;
+  background-color: #003ce0;
   color: #fff;
   padding: 10px 20px;
 }
@@ -129,7 +129,7 @@ body.active {
 
 .asesoras h2 {
   margin-bottom: 15px;
-  color: #0004d3;
+  color: #000000;
 }
 
 .asesoras-grid {
@@ -164,7 +164,7 @@ body.active {
 }
 
 .card-asesora button {
-  background-color: #0004d3;
+  background-color: #003ce0;
   color: #fff;
   border: none;
   padding: 8px 12px;
@@ -190,7 +190,7 @@ body.active {
 }
 
 .historial-header h2 {
-  color: #0004d3;
+  color: #000000;
 }
 
 .acciones-tabla {
@@ -208,7 +208,7 @@ body.active {
 }
 
 .acciones-tabla button {
-  background-color: #0004d3;
+  background-color: #003ce0;
   color: #fff;
   border: none;
   padding: 8px 14px;
@@ -232,7 +232,7 @@ table {
 }
 
 thead {
-  background-color: #0004d3;
+  background-color: #003ce0;
   color: #fff;
 }
 
@@ -312,7 +312,7 @@ tbody tr:nth-child(even) {
 .modal h2 {
   margin-top: 0;
   margin-bottom: 15px;
-  color: #0004d3;
+  color: #000000;
   font-size: 1.2rem;
 }
 
